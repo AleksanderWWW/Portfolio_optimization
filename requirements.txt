@@ -5,3 +5,4 @@ PySimpleGUI==4.40.0
 requests==2.25.1
 urllib3==1.26.4
 rpy2==3.4.4
+beautifulsoup4==4.8.1
