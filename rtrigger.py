@@ -9,12 +9,16 @@ class RScriptTrigger:
         self.script_path = script_path
         self.r = ro.r
         self.r_df = None
+        self.result_dict = None
 
     def source_r_script(self):
         self.r['source'](self.script_path)
 
     def add_df(self, df):
         self.r_df = self.df_to_r_object(df)
+
+    def add_result_dict(self, r_dict: dict):
+        self.result_dict = r_dict
 
     @staticmethod
     def df_to_r_object(df):
