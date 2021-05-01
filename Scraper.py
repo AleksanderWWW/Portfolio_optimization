@@ -33,7 +33,7 @@ class Scraper:
     def extract_table(page_soup):
         data = []
         table = page_soup.find("table", {"id": "fth1"})
-        header = ["Symbol",	"Nazwa", "Kurs", "Zmiana1", "Zmiana1", "Wolumen"]
+        header = ["Symbol",	"Nazwa", "Kurs", "Zmiana1", "Zmiana2", "Wolumen"]
         table = table.find("tbody")
         for row in table.find_all("tr"):
             cell_list = [cell.text for cell in row.find_all('td')][:-2]
