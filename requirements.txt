@@ -6,3 +6,5 @@ requests==2.25.1
 urllib3==1.26.4
 rpy2==3.4.4
 beautifulsoup4==4.8.1
+lxml==4.4.1
+pandas==1.0.3
