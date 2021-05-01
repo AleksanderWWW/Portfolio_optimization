@@ -56,7 +56,7 @@ class Scraper:
             df = self.extract_table(page_soup)
             self.all_dfs.append(df)
         result = self.merge_data_frames(self.all_dfs)
-        result.to_excel("Notowania_giełdowe.xlsx", index=False)
+        return result
 
 
 if __name__ == "__main__":
