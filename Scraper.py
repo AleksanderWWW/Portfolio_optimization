@@ -13,6 +13,7 @@ class Scraper:
         self.start = start_date
         self.end = end_date
         self.all_dfs = []
+        self.data = pd.DataFrame()
         self.tickers = []
 
     def get_tickers(self):
@@ -23,6 +24,17 @@ class Scraper:
             ticker = row.findAll('td')[0].text
             ticker = ticker[:-1]
             self.tickers.append(ticker)
+
+    def get_time_series(self, ticker):
+        df = pdr.DataReader(ticker.replace('.', '-'), 'yahoo', self.start, self.end)
+        df = df["Adj Close"]
+        df = df.rename(ticker)
+        self.data[ticker] = df
+
+    def scrape_data(self):
+        self.get_tickers()
+        for ticker in self.tickers[:5]:
+            self.get_time_series(ticker=ticker)
 
     @staticmethod
     def calculate_pagination(number_records):
@@ -74,5 +86,7 @@ class Scraper:
 
 
 if __name__ == "__main__":
-    scraper = Scraper()
-    scraper.scrape()
+    start = dt.datetime(2021, 1, 1)
+    end = dt.datetime.now()
+    scraper = Scraper(start, end)
+    scraper.scrape_data()
