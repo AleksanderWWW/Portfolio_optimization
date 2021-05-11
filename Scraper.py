@@ -2,13 +2,27 @@ import requests
 from bs4 import BeautifulSoup
 from math import ceil
 import pandas as pd
+import datetime as dt
+import pandas_datareader as pdr
 
 
 class Scraper:
     base_url = "https://stooq.pl/t/?i=513"
 
-    def __init__(self):
+    def __init__(self, start_date, end_date):
+        self.start = start_date
+        self.end = end_date
         self.all_dfs = []
+        self.tickers = []
+
+    def get_tickers(self):
+        html = requests.get('http://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
+        soup = BeautifulSoup(html.text, 'lxml')
+        table = soup.find('table', {'class': 'wikitable sortable'})
+        for row in table.findAll('tr')[1:]:
+            ticker = row.findAll('td')[0].text
+            ticker = ticker[:-1]
+            self.tickers.append(ticker)
 
     @staticmethod
     def calculate_pagination(number_records):
