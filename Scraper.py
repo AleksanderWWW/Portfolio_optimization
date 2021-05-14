@@ -18,26 +18,35 @@ class Scraper:
         self.data = pd.DataFrame()
         self.tickers = []
 
+    # def get_tickers(self):
+    #     html = requests.get('http://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
+    #     soup = BeautifulSoup(html.text, 'lxml')
+    #     table = soup.find('table', {'class': 'wikitable sortable'})
+    #     for row in table.findAll('tr')[1:]:
+    #         ticker = row.findAll('td')[0].text
+    #         ticker = ticker[:-1]
+    #         self.tickers.append(ticker)
     def get_tickers(self):
-        html = requests.get('http://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
+        html = requests.get("https://stooq.pl/q/i/?s=^dji")
         soup = BeautifulSoup(html.text, 'lxml')
-        table = soup.find('table', {'class': 'wikitable sortable'})
-        for row in table.findAll('tr')[1:]:
-            ticker = row.findAll('td')[0].text
-            ticker = ticker[:-1]
-            self.tickers.append(ticker)
+        table = soup.find("table", {"id": "fth1"}).find("tbody")
+        for row in table.find_all("tr"):
+            ticker_cell = row.find("td")
+            ticker = ticker_cell.text
+            self.tickers.append(ticker[:-3])
 
     def get_time_series(self, ticker):
-        df = pdr.DataReader(ticker.replace('.', '-'), 'yahoo', self.start, self.end)
+        df = pdr.DataReader(ticker, 'yahoo', self.start, self.end)
         df = df["Adj Close"]
         df = df.rename(ticker)
         self.all_dfs.append(df)
 
     def scrape_data(self):
         self.get_tickers()
-        with Executor(max_workers=40) as executor:
+        with Executor(max_workers=30) as executor:
             executor.map(self.get_time_series, self.tickers)
         self.data = self.merge_data_frames(self.all_dfs)
+        self.data = self.data.sort_index(axis=1)
         #pool = mp.Pool(mp.cpu_count())
         #[pool.apply(self.get_time_series, args=(ticker,)) for ticker in self.tickers]
         #pool.close()
@@ -94,8 +103,8 @@ class Scraper:
 
 
 if __name__ == "__main__":
-    start = dt.datetime(2021, 1, 1)
     end = dt.datetime.now()
+    start = end - dt.timedelta(days=365)
     scraper = Scraper(start, end)
     scraper.scrape_data()
     print(scraper.data)
