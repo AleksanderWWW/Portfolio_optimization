@@ -4,6 +4,8 @@ from math import ceil
 import pandas as pd
 import datetime as dt
 import pandas_datareader as pdr
+import multiprocessing as mp
+from concurrent.futures import ThreadPoolExecutor as Executor
 
 
 class Scraper:
@@ -29,12 +31,18 @@ class Scraper:
         df = pdr.DataReader(ticker.replace('.', '-'), 'yahoo', self.start, self.end)
         df = df["Adj Close"]
         df = df.rename(ticker)
-        self.data[ticker] = df
+        self.all_dfs.append(df)
 
     def scrape_data(self):
         self.get_tickers()
-        for ticker in self.tickers[:5]:
-            self.get_time_series(ticker=ticker)
+        with Executor(max_workers=40) as executor:
+            executor.map(self.get_time_series, self.tickers)
+        self.data = self.merge_data_frames(self.all_dfs)
+        #pool = mp.Pool(mp.cpu_count())
+        #[pool.apply(self.get_time_series, args=(ticker,)) for ticker in self.tickers]
+        #pool.close()
+        #for ticker in self.tickers[:5]:
+            #self.get_time_series(ticker=ticker)
 
     @staticmethod
     def calculate_pagination(number_records):
@@ -69,7 +77,7 @@ class Scraper:
 
     @staticmethod
     def merge_data_frames(dfs):
-        df = pd.concat(dfs).reset_index(drop=True)
+        df = pd.concat(dfs, axis=1)
         return df
 
     def scrape(self):
@@ -90,3 +98,4 @@ if __name__ == "__main__":
     end = dt.datetime.now()
     scraper = Scraper(start, end)
     scraper.scrape_data()
+    print(scraper.data)
