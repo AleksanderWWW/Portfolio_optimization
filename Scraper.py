@@ -7,7 +7,6 @@ from concurrent.futures import ThreadPoolExecutor as Executor
 
 
 class Scraper:
-    base_url = "https://stooq.pl/t/?i=513"
 
     def __init__(self, start_date, end_date):
         self.start = start_date
@@ -46,7 +45,7 @@ class Scraper:
 
 if __name__ == "__main__":
     end = dt.datetime.now()
-    start = end - dt.timedelta(days=365)
+    start = end - dt.timedelta(days=365*2)
     scraper = Scraper(start, end)
     scraper.scrape_data()
     print(scraper.data)
