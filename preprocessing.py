@@ -1,20 +1,19 @@
-import pandas as pd
+import numpy as np
+
+"""Moduł ma za zadanie dostarczyć do skryptu R przeprocesowane dane, uzyskane na bazie tabeli z 
+    notowaniami giełdowymi"""
 
 
-def add_stats(df: pd.DataFrame):
-    ret_list = []
-    var_list = []
-    for col in df.columns:
-        ret = (df[col][-1] - df[col][0])/df[col][0]
-        ret_list.append(ret)
-        var = df[col].var()
-        var_list.append(var)
-    df.loc["Variance"] = var_list
-    df.loc["ROR"] = ret_list
-    return df
+def get_cov_matrix(df):
+    """Zwraca macierz kowariancji, na podstawie której wyliczone zostanie volatility"""
+    new_df = df.copy()
+    new_df = new_df.pct_change().apply(lambda x: np.log(1 + x))
+    return new_df.cov()
 
 
-data = pd.read_excel("temp.xlsx")
-data = data.set_index("Date")
-df = add_stats(data)
-breakpoint()
+def get_ind_er(df):
+    """Zwraca wektor, który po wymnożeniu przez wektor wag da zwrot z portfela"""
+    ind_er = df.resample('Y').last().pct_change().mean()
+    return ind_er
+
+
