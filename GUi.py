@@ -10,6 +10,10 @@ class Gui:
             [sg.Text('alpha          '), sg.InputText(key="sa_alpha")],
             [sg.Text('temperature'), sg.InputText(key="sa_temperature")],
             [sg.Text('max_iter     '), sg.InputText(key="sa_max_iter")],
+            [sg.Text('Particle Swarm')],
+            [sg.Text('param1          '), sg.InputText(key="ps_param1")],
+            [sg.Text('param2'), sg.InputText(key="ps_param2")],
+            [sg.Text('param3     '), sg.InputText(key="ps_param3")],
             [sg.Button('Optimize'), sg.Button('Cancel')],
             [sg.Output(size=(100, 350))]
                      ]
@@ -25,12 +29,14 @@ class Gui:
 
     def create_dict(self):
         val_dict = {
-            "Simulated_annealing": {key: self.values[key] for key in list(self.values.keys()) if key[:2] == "sa"}}
+            "Simulated_annealing": {key: self.values[key] for key in list(self.values.keys()) if key[:2] == "sa"},
+            "Particle_swarm": {key: self.values[key] for key in list(self.values.keys()) if key[:2] == "ps"}
+                    }
         return val_dict
 
-    def save_values(self, value_dict: dict):
-        with open(self.out_file, 'w+') as f:
-            json.dump(value_dict, f)
+    # def save_values(self, value_dict: dict):
+    #     with open(self.out_file, 'w+') as f:
+    #         json.dump(value_dict, f)
 
     def display_output(self, msg):
         print(msg)
