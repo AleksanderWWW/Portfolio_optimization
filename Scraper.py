@@ -49,3 +49,4 @@ if __name__ == "__main__":
     scraper = Scraper(start, end)
     scraper.scrape_data()
     print(scraper.data)
+    scraper.data.to_excel("temp.xlsx")

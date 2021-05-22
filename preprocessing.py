@@ -17,3 +17,17 @@ def get_ind_er(df):
     return ind_er
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
