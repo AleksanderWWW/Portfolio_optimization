@@ -9,11 +9,11 @@ import numpy as np
 
 class AnnealingEngine:
     
-    def __init__(self, func, cov_matrix, ind_er, n: int, temp_0=100, d=0.1, alpha=0.9, max_iter=1000):
+    def __init__(self, func, cov_matrix, ind_er,  temp_0=100, d=0.1, alpha=0.9, max_iter=1000):
         self.func = func
         self.temp = temp_0
-        self.n = n
-        self.current_x = np.random.uniform(size=n)
+        self.n = len(ind_er)
+        self.current_x = np.random.uniform(size=self.n)
         self.current_x = np.abs(self.current_x/np.sum(self.current_x))
         self.d = d
         self.alpha = alpha
@@ -31,7 +31,8 @@ class AnnealingEngine:
         
     def draw_candidate(self):
         candidate = self.current_x + np.random.uniform(low=-self.d, high=self.d, size=self.n)
-        return np.abs(candidate/np.sum(candidate))  # weight scaling
+        candidate = np.abs(candidate)  # absolute value
+        return candidate/np.sum(candidate)  # weight scaling
     
     def prob_transition(self, candidate):
         """Probabilistic transition allows the algorithm to escape from local
