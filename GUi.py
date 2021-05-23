@@ -31,7 +31,7 @@ class Gui:
         cov_matrix = get_cov_matrix(self.df)
         ind_er = get_ind_er(self.df)
         try:
-            annealer = self.annealer(self.obj_func, cov_matrix, ind_er, len(self.df.columns),
+            annealer = self.annealer(self.obj_func, cov_matrix, ind_er,
                                      float(val_dict["sa_temperature"]),
                                      float(val_dict["sa_dist"]),
                                      float(val_dict["sa_alpha"]),
@@ -39,7 +39,7 @@ class Gui:
         except ValueError:
             # if input is incorrect the program will launch optimization with default parameters
             self.display_output("Incorrect input. The program will launch optimization with default parameters.")
-            annealer = self.annealer(self.obj_func, cov_matrix, ind_er, len(self.df.columns))
+            annealer = self.annealer(self.obj_func, cov_matrix, ind_er)
 
         return annealer
 
