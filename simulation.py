@@ -16,6 +16,7 @@ alphas = np.linspace(0.970, 0.990, 10)
 # Simulate optimizations for different combinations of alpha and max_iter
 for max_iter in iters:
     for alpha in alphas:
+        print((alpha, max_iter))
         annealer = AnnealingEngine(obj_func, cov_matrix, ind_er, len(df.columns), 100, alpha, max_iter)
         annealer.optimize()
         weights, sharpe = annealer.get_result
